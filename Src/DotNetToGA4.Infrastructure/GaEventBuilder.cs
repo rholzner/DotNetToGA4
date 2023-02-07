@@ -1,7 +1,4 @@
 ﻿using DotNetToGA4.Infrastructure.Models;
-using System.Diagnostics.Metrics;
-using System.Net.Http.Headers;
-using System.Text.Json.Serialization;
 
 namespace DotNetToGA4.Infrastructure;
 public record Result(bool success, string msg);
