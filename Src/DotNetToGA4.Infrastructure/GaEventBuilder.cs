@@ -244,10 +244,3 @@ public static class GaEventBuilder
 
 }
 
-
-// Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
-
-
-
-
-
