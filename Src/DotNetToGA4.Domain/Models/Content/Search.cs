@@ -2,9 +2,9 @@
 
 namespace DotNetToGA4.Domain.Models.Content;
 
-public class ClickSearch : Core
+public class Search : Core
 {
-    public ClickSearch(string searchText)
+    public Search(string searchText)
     {
         SearchText = searchText;
     }

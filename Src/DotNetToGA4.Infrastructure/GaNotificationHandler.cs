@@ -75,6 +75,10 @@ public class GaNotificationHandler : INotificationHandler<GaNotification>
 
                 events.Add(GaEventBuilder.ViewPromotion(campaingProducts));
             }
+            else if(item is ClickCampaignArea clickCampaignArea) 
+            {
+
+            }
         }
 
         var r = await gaHttpClient.PostGaEvents(events, notification.TestRun);
