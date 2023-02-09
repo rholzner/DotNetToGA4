@@ -232,7 +232,7 @@ public static class GaEventBuilder
         return new Event() { Name = "view_item_list", Params = new Params() { ItemListId = itemListId, ItemId = itemListName, Items = items } };
     }
 
-    public static Event ViewPromotion(string promotionId, string promotionName, IEnumerable<Item> items, string? creativeName = null, string? creativeSlot = null)
+    public static Event ViewPromotion(IEnumerable<Item> items, string? promotionId = null, string? promotionName = null, string? creativeName = null, string? creativeSlot = null)
     {
         return new Event() { Name = "view_promotion", Params = new Params() { PromotionId = promotionId, PromotionName = promotionName, CreativeName = creativeName, CreativeSlot = creativeSlot, Items = items } };
     }
