@@ -1,8 +1,10 @@
-﻿namespace DotNetToGA4.Domain.Models.Sales.Checkout;
+﻿using DotNetToGA4.Domain.Models.Sales.Cart;
+
+namespace DotNetToGA4.Domain.Models.Sales.Checkout;
 
 public class AddShipping : Core
 {
-    public AddShipping(string currency, double value, string coupon, string shippingType, IEnumerable<CoreProduct> products)
+    public AddShipping(string currency, double value, string coupon, string shippingType, IEnumerable<CartProduct> products)
     {
         Currency = currency;
         Value = value;
@@ -10,7 +12,7 @@ public class AddShipping : Core
         ShippingType = shippingType;
     }
 
-    public IEnumerable<CoreProduct> Products { get; }
+    public IEnumerable<CartProduct> Products { get; }
     public string Currency { get; }
     public double Value { get; }
     public string Coupon { get; }

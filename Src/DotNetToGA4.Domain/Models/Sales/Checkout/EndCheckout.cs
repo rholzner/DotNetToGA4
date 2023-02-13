@@ -1,8 +1,10 @@
-﻿namespace DotNetToGA4.Domain.Models.Sales.Checkout;
+﻿using DotNetToGA4.Domain.Models.Sales.Cart;
+
+namespace DotNetToGA4.Domain.Models.Sales.Checkout;
 
 public class EndCheckout : Core
 {
-    public EndCheckout(string transactionId, string currency, double value, string coupon, string shipping, string tax, IEnumerable<CoreProduct> products)
+    public EndCheckout(string transactionId, string currency, double value, string coupon, double shipping, double tax, IEnumerable<CartProduct> products)
     {
         TransactionId = transactionId;
         Currency = currency;
@@ -17,7 +19,7 @@ public class EndCheckout : Core
     public string Currency { get; }
     public double Value { get; }
     public string Coupon { get; }
-    public string Shipping { get; }
-    public string Tax { get; }
-    public IEnumerable<CoreProduct> Products { get; }
+    public double Shipping { get; }
+    public double Tax { get; }
+    public IEnumerable<CartProduct> Products { get; }
 }

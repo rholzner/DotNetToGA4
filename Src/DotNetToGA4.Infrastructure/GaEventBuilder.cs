@@ -170,11 +170,6 @@ public static class GaEventBuilder
         return new Event() { Name = "select_item", Params = new Params() { ItemListId = item_list_id, ItemListName = item_list_name, Items = items } };
     }
 
-    public static Event SelectPromotion(string promotionId, string promotionName, IEnumerable<Item> items, string? creativeName = null, string? creativeSlot = null)
-    {
-        return new Event() { Name = "select_promotion", Params = new Params() { PromotionId = promotionId, PromotionName = promotionName, CreativeName = creativeName, CreativeSlot = creativeSlot, Items = items } };
-    }
-
     public static Event Share(string method, string contentType, string itemId)
     {
         return new Event() { Name = "share", Params = new Params() { Method = method, ContentType = contentType, ItemId = itemId } };
@@ -235,6 +230,10 @@ public static class GaEventBuilder
     public static Event ViewPromotion(IEnumerable<Item> items, string? promotionId = null, string? promotionName = null, string? creativeName = null, string? creativeSlot = null)
     {
         return new Event() { Name = "view_promotion", Params = new Params() { PromotionId = promotionId, PromotionName = promotionName, CreativeName = creativeName, CreativeSlot = creativeSlot, Items = items } };
+    }
+    public static Event SelectPromotion(IEnumerable<Item> items, string? promotionId = null, string? promotionName = null, string? creativeName = null, string? creativeSlot = null)
+    {
+        return new Event() { Name = "select_promotion", Params = new Params() { PromotionId = promotionId, PromotionName = promotionName, CreativeName = creativeName, CreativeSlot = creativeSlot, Items = items } };
     }
 
     public static Event ViewSearchResults(string searchTerm, IEnumerable<Item> items)

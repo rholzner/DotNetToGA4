@@ -2,18 +2,25 @@
 
 public class ClickCampaignArea : Core
 {
-    public ClickCampaignArea(string blockId, string blockName, string campaignId, string campaignName, IEnumerable<CoreProduct> coreProducts)
+    public ClickCampaignArea(string areaId, string areaName, string campaignId, string campaignName, CampaingProduct[] products)
     {
-        BlockId = blockId;
-        BlockName = blockName;
+        AreaId = areaId;
+        AreaName = areaName;
         CampaignId = campaignId;
         CampaignName = campaignName;
-        CoreProducts = coreProducts;
+        Products = products;
     }
 
-    public string BlockId { get; }
-    public string BlockName { get; }
-    public string CampaignId { get; }
-    public string CampaignName { get; }
-    public IEnumerable<CoreProduct> CoreProducts { get; }
+    public string? AreaId { get; }
+    public string? AreaName { get; }
+
+    /// <summary>
+    /// Fallback value if not set on product item in Products
+    /// </summary>
+    public string? CampaignId { get; }
+    /// <summary>
+    /// Fallback value if not set on product item in Products
+    /// </summary>
+    public string? CampaignName { get; }
+    public CampaingProduct[] Products { get; }
 }
