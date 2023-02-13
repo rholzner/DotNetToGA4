@@ -16,12 +16,12 @@ public sealed class GaHttpClient : IGaHttpClient
     /// </summary>
     private readonly Uri apiEndpointDebug;
 
-    public GaHttpClient(HttpClient httpClient)
+    public GaHttpClient(HttpClient httpClient, InfrastructureSetting infrastructureSetting)
     {
         this.httpClient = httpClient;
         clientId = "";
 
-        jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
+        jsonSerializerOptions = infrastructureSetting.GaJsonSerializerOptions;
 
         string apiUrl = "https://www.google-analytics.com/mp/collect";
         string measurementId = "G-XXXXXXXXXX";

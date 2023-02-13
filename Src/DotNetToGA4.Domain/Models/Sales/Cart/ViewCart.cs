@@ -2,7 +2,7 @@
 
 public class ViewCart : AddToCart
 {
-    public ViewCart(string currency, double value, CoreProduct product) : base(currency, value, product)
+    public ViewCart(string currency, double value, CartProduct product) : base(currency, value, product)
     {
 
     }

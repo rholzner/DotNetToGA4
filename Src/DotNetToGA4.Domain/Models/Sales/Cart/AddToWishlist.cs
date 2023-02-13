@@ -2,7 +2,7 @@
 
 public class AddToWishlist : AddToCart
 {
-    public AddToWishlist(string currency, double value, CoreProduct product) : base(currency, value, product)
+    public AddToWishlist(string currency, double value, CartProduct product) : base(currency, value, product)
     {
 
     }

@@ -10,6 +10,7 @@ public class AddShipping : Core
         Value = value;
         Coupon = coupon;
         ShippingType = shippingType;
+        Products = products;
     }
 
     public IEnumerable<CartProduct> Products { get; }

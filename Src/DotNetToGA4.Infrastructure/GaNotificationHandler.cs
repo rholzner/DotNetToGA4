@@ -1,5 +1,4 @@
 ﻿using DotNetToGA4.Domain.Models.Content;
-using DotNetToGA4.Domain.Models.Sales;
 using DotNetToGA4.Domain.Models.Sales.Campaign;
 using DotNetToGA4.Domain.Models.Sales.Cart;
 using DotNetToGA4.Domain.Models.Sales.Checkout;
@@ -9,6 +8,7 @@ using DotNetToGA4.Domain.Notifications;
 using DotNetToGA4.Infrastructure.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace DotNetToGA4.Infrastructure;
 
@@ -16,16 +16,50 @@ public class GaNotificationHandler : INotificationHandler<GaNotification>
 {
     private readonly IGaHttpClient gaHttpClient;
     private readonly ILogger<GaNotificationHandler> logger;
+    private readonly InfrastructureSetting infrastructureSetting;
 
-    public GaNotificationHandler(IGaHttpClient gaHttpClient, ILogger<GaNotificationHandler> logger)
+    public GaNotificationHandler(IGaHttpClient gaHttpClient, ILogger<GaNotificationHandler> logger, InfrastructureSetting infrastructureSetting)
     {
         this.gaHttpClient = gaHttpClient;
         this.logger = logger;
+        this.infrastructureSetting = infrastructureSetting;
     }
+
+
+
     public async Task Handle(GaNotification notification, CancellationToken cancellationToken)
     {
         List<Event> events = new List<Event>();
+        MapToGaEventTyp(notification, events);
 
+        if (notification.Run == RunAs.DryRun || notification.Run == RunAs.notset)
+        {
+            foreach (var item in events)
+            {
+                logger.LogInformation("GaNotificationHandler:Handle:DryRun: {data}", JsonSerializer.Serialize(item, infrastructureSetting.GaJsonSerializerOptions));
+            }
+            return;
+        }
+
+        bool testRun = notification.Run == RunAs.TestRun;
+
+        var r = await gaHttpClient.PostGaEvents(events, testRun);
+        if (r.success && testRun)
+        {
+            logger.LogInformation("GaNotificationHandler:Handle:Sent {0} with Ok response", events.Count);
+            return;
+        }
+        else if (testRun)
+        {
+            logger.LogError("GaNotificationHandler:Handle:Sent Failed to send {0} with error: {1}", events.Count, r.msg);
+            return;
+        }
+
+        logger.LogInformation("GaNotificationHandler:Handle: done sending {0} events", events.Count);
+    }
+
+    internal static void MapToGaEventTyp(GaNotification notification, List<Event> events)
+    {
         foreach (var item in notification.Events)
         {
             switch (item)
@@ -273,21 +307,9 @@ public class GaNotificationHandler : INotificationHandler<GaNotification>
 
             }
         }
-
-        var r = await gaHttpClient.PostGaEvents(events, notification.TestRun);
-        if (r.success && notification.TestRun)
-        {
-            logger.LogInformation("GaNotificationHandler:Handle:Sent {0} with Ok response", events.Count);
-            return;
-        }
-        else if (notification.TestRun)
-        {
-            logger.LogError("GaNotificationHandler:Handle:Sent Failed to send {0} with error: {1}", events.Count, r.msg);
-            return;
-        }
-
-        logger.LogInformation("GaNotificationHandler:Handle: done sending {0} events", events.Count);
     }
+
+
 }
 
 public class DotNetToGA4Exception : Exception

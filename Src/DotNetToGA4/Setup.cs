@@ -9,13 +9,12 @@ namespace DotNetToGA4;
 
 public static class Setup
 {
-    public static IServiceCollection AddShoppingCart(this IServiceCollection services)
+    public static IServiceCollection AddDotNetToGA4(this IServiceCollection services)
     {
         services.AddMediatR(Assembly.GetExecutingAssembly(), typeof(ApplicationInfo).Assembly, typeof(DomainInfo).Assembly, typeof(InfrastructureInfo).Assembly);
 
-
-        //services.AddApplication();
-        //services.AddInfrastructure();
+        services.AddApplication();
+        services.AddInfrastructure();
 
 
         return services;
