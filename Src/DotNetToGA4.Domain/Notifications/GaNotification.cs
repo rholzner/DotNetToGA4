@@ -5,21 +5,18 @@ namespace DotNetToGA4.Domain.Notifications;
 
 public class GaNotification : INotification
 {
-    public GaNotification(Core events, RunAs run)
+    public GaNotification(Core events)
     {
         Events = new Core[] { events };
-        Run = run;
     }
 
-    public GaNotification(IEnumerable<Core> cores, RunAs run)
+    public GaNotification(IEnumerable<Core> cores)
     {
         Events = cores;
-        Run = run;
     }
 
 
     public IEnumerable<Core> Events { get; }
-    public RunAs Run { get; }
 }
 
 public enum RunAs

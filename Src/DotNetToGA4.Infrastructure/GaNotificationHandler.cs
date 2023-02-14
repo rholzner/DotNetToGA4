@@ -32,7 +32,7 @@ public class GaNotificationHandler : INotificationHandler<GaNotification>
         List<Event> events = new List<Event>();
         MapToGaEventTyp(notification, events);
 
-        if (notification.Run == RunAs.DryRun || notification.Run == RunAs.notset)
+        if (infrastructureSetting.RunAs == RunAs.DryRun || infrastructureSetting.RunAs == RunAs.notset)
         {
             foreach (var item in events)
             {
@@ -41,7 +41,7 @@ public class GaNotificationHandler : INotificationHandler<GaNotification>
             return;
         }
 
-        bool testRun = notification.Run == RunAs.TestRun;
+        bool testRun = infrastructureSetting.RunAs == RunAs.TestRun;
 
         var r = await gaHttpClient.PostGaEvents(events, testRun);
         if (r.success && testRun)

@@ -1,49 +1,33 @@
-﻿using DotNetToGA4.Domain.Models;
-using DotNetToGA4.Domain.Notifications;
-using MediatR;
+﻿using DotNetToGA4.Application.BackgroundTask;
+using DotNetToGA4.Domain.Models;
+using System.ComponentModel;
 
 namespace DotNetToGA4.Application;
 public interface IGaEventService
 {
-    void OverRideDefualtRunAs(RunAs run);
-
-    Task Send(Core eventData, RunAs run = RunAs.Prod);
-    Task Send(IEnumerable<Core> eventData, RunAs run = RunAs.Prod);
+    ValueTask Send(Core gaEvent, CancellationToken cancellationToken = default);
+    ValueTask Send(IEnumerable<Core> gaEvents, CancellationToken cancellationToken = default);
 }
 
 public class GaEventService : IGaEventService
 {
-    private readonly IMediator mediator;
-    private RunAs defualtRunAs = RunAs.notset;
-    public GaEventService(IMediator mediator)
+    private readonly IBackgroundTaskQueue backgroundTaskQueue;
+
+    public GaEventService(IBackgroundTaskQueue backgroundTaskQueue)
     {
-        this.mediator = mediator;
+        this.backgroundTaskQueue = backgroundTaskQueue;
     }
 
-    public void OverRideDefualtRunAs(RunAs run)
+    public async ValueTask Send(Core gaEvent, CancellationToken cancellationToken = default)
     {
-        defualtRunAs = run;
+        await backgroundTaskQueue.QueEventToGaAsync(gaEvent, cancellationToken);
     }
 
-    public async Task Send(Core eventData, RunAs run = RunAs.Prod)
+    public async ValueTask Send(IEnumerable<Core> gaEvents, CancellationToken cancellationToken = default)
     {
-        if (defualtRunAs != RunAs.notset)
+        foreach (var gaEvent in gaEvents)
         {
-            run = defualtRunAs;
+            await backgroundTaskQueue.QueEventToGaAsync(gaEvent, cancellationToken);
         }
-
-        var msg = new GaNotification(eventData, run);
-        await mediator.Publish(msg);
-    }
-
-    public async Task Send(IEnumerable<Core> eventData, RunAs run = RunAs.Prod)
-    {
-        if (defualtRunAs != RunAs.notset)
-        {
-            run = defualtRunAs;
-        }
-
-        var msg = new GaNotification(eventData, run);
-        await mediator.Publish(msg);
     }
 }
