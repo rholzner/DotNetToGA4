@@ -38,6 +38,7 @@ public class GaNotificationHandler : INotificationHandler<GaNotification>
             {
                 logger.LogInformation("GaNotificationHandler:Handle:DryRun: {data}", JsonSerializer.Serialize(item, infrastructureSetting.GaJsonSerializerOptions));
             }
+            await Task.Delay(500);
             return;
         }
 

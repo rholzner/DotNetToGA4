@@ -1,4 +1,5 @@
 ﻿using DotNetToGA4.Domain.Models;
+using Microsoft.Extensions.Logging;
 using System.Threading.Channels;
 
 namespace DotNetToGA4.Application.BackgroundTask;
@@ -11,11 +12,13 @@ public interface IBackgroundTaskQueue
 
 internal class BackgroundTaskQueue : IBackgroundTaskQueue
 {
-    private readonly Channel<Core> _queue;
+    private Channel<Core> _queue;
+    private readonly ILogger<BackgroundTaskQueue> logger;
 
-    public BackgroundTaskQueue()
+    public BackgroundTaskQueue(ILogger<BackgroundTaskQueue> logger)
     {
         _queue = Channel.CreateUnbounded<Core>();
+        this.logger = logger;
     }
 
     public async ValueTask QueEventToGaAsync(Core workItem, CancellationToken cancellationToken)
@@ -38,6 +41,7 @@ internal class BackgroundTaskQueue : IBackgroundTaskQueue
         {
             take = _queue.Reader.Count;
             hasMoreItems = false;
+            logger.LogInformation("BackgroundTaskQueue:DequeueEventToGaAsync: nr of items in que: {queCount}", _queue.Reader.Count);
         }
 
         if (take == 0)
@@ -47,9 +51,15 @@ internal class BackgroundTaskQueue : IBackgroundTaskQueue
 
         for (int i = 0; i < take; i++)
         {
-            
+
             Core? workItem = await _queue.Reader.ReadAsync(cancellationToken);
             list.Add(workItem);
+        }
+
+        if (_queue.Reader.CanCount && _queue.Reader.Count == 0)
+        {
+            logger.LogInformation("BackgroundTaskQueue:DequeueEventToGaAsync: reset que");
+            _queue = Channel.CreateUnbounded<Core>();
         }
 
         return new DequeueEventToGaAsyncResult(list, hasMoreItems);
@@ -57,5 +67,5 @@ internal class BackgroundTaskQueue : IBackgroundTaskQueue
 
 }
 
-public record DequeueEventToGaAsyncResult(IEnumerable<Core> Cores,bool hasMoreToRead);
+public record DequeueEventToGaAsyncResult(IEnumerable<Core> Cores, bool hasMoreToRead);
 
